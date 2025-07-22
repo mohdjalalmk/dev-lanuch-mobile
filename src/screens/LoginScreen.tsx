@@ -3,16 +3,13 @@ import { View, StyleSheet, Image } from 'react-native';
 import {
   TextInput,
   Button,
-  Text,
   Card,
-  ActivityIndicator,
   HelperText,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { login } from '../services/auth';
-import { useDispatch } from 'react-redux';
-import { login as loginAction } from '../slices/authSlice';
-import { storeToken } from '../utils/auth';
+import { loginUser } from '../slices/authSlice';
+import { useAppDispatch } from '../store';
+
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -22,25 +19,26 @@ const LoginScreen = () => {
   const [error, setError] = useState('');
 
   const navigation = useNavigation<any>();
-  const dispatch = useDispatch();
+const dispatch = useAppDispatch();
 
-  const handleLogin = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      if (email === '' || password === '') {
-        throw new Error('Email and Password are required');
-      }
-      const response = await login(email, password);
-      const { user, token } = response;
-      await storeToken(token);
-      dispatch(loginAction(user));
-      setLoading(false);
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
-      setLoading(false);
+
+const handleLogin = async () => {
+  setLoading(true);
+  setError('');
+  try {
+    if (!email || !password) {
+      throw new Error('Email and Password are required');
     }
-  };
+
+    await dispatch(loginUser({ email, password })).unwrap();
+
+    setLoading(false);
+  } catch (err: any) {
+    setError(err.message || 'Login failed');
+    setLoading(false);
+  }
+};
+
 
   return (
     <View style={styles.container}>

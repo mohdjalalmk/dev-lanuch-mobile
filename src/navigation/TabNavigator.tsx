@@ -9,9 +9,21 @@ const Tab = createBottomTabNavigator();
 export default function TabNavigator() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Explore" component={ExploreScreen} />
-      <Tab.Screen name="My Courses" component={MyCoursesScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="Explore"
+        component={ExploreScreen}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="My Courses"
+        component={MyCoursesScreen}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="Profile"
+        component={ProfileScreen}
+      />
     </Tab.Navigator>
   );
 }

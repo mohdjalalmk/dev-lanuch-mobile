@@ -26,17 +26,29 @@ export default function RootNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {isLoggedIn ? (
         <>
-          <Stack.Screen name="MainApp" component={TabNavigator} />
-          <Stack.Screen name="CourseDetail" component={CourseDetailScreen} />
+          <Stack.Screen
+            name="MainApp"
+            component={TabNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CourseDetail"
+            component={CourseDetailScreen}
+            options={{ headerShown: false }}
+          />
         </>
       ) : (
         <>
           <Stack.Screen
             name="Login"
             component={LoginScreen}
-            options={{ gestureEnabled: false }}
+            options={{ headerShown: false, gestureEnabled: false }}
           />
-          <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen
+            name="Signup"
+            component={SignupScreen}
+            options={{ headerShown: false }}
+          />
         </>
       )}
     </Stack.Navigator>
