@@ -95,3 +95,15 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+## Navigation Structure
+
+- All navigation logic is in `src/navigation/`:
+  - `RootNavigator.tsx`: The root stack navigator, used in `App.tsx`.
+  - `TabNavigator.tsx`: The bottom tab navigator, used as the main screen in the stack.
+- Screens are in `src/screens/`:
+  - `ExploreScreen.tsx`: First tab
+  - `MyCoursesScreen.tsx`: Second tab
+  - `ProfileScreen.tsx`: Third tab
+
+The app entry (`App.tsx`) uses `NavigationContainer` and the `RootNavigator`.
