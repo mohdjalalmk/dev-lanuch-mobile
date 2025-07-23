@@ -14,7 +14,7 @@ type ScreenWrapperProps = {
 const ScreenWrapper = ({
   children,
   style,
-  backgroundColor = '#fff',
+  backgroundColor = '#303641',
 }: ScreenWrapperProps) => {
   const insets = useSafeAreaInsets();
 
