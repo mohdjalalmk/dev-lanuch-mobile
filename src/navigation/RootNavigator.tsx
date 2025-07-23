@@ -6,7 +6,7 @@ import { ActivityIndicator, View } from 'react-native';
 import TabNavigator from './TabNavigator';
 import LoginScreen from '../screens/LoginScreen';
 import SignupScreen from '../screens/SignupScreen';
-import CourseDetailScreen from '../screens/CourseDetailScreen';
+import { CourseDetailScreen } from '../screens/CourseDetailScreen';
 
 const Stack = createNativeStackNavigator();
 

@@ -24,3 +24,15 @@ export interface GetAllCoursesResponse {
   totalPages: number;
   totalCourses: number;
 }
+
+export type CourseProgress = {
+  completedVideos: { key: string }[];
+  progress: number;
+};
+
+export type Video = {
+  key: string;
+  title: string;
+  description?: string;
+};
+

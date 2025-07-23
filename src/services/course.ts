@@ -32,3 +32,42 @@ export async function getAllCourses({
 
   return response.data;
 }
+
+export const getCourseById = async (courseId: string): Promise<Course> => {
+  const res = await api.get<{ course: Course }>(`/courses/${courseId}`);
+  return res.data.course;
+};
+
+export async function enrollInCourse(courseId: string): Promise<{ message: string }> {
+  const response = await api.post<{ message: string }>(`/user/courses/enroll/${courseId}`);
+  return response.data;
+}
+
+export async function getCourseProgress(courseId: string): Promise<{
+  courseId: string;
+  progress: number;
+  completedVideos: Array<{ key: string }>;
+}> {
+  const response = await api.get(`/user/me/courses/${courseId}/progress`);
+  return response.data;
+}
+
+export async function updateCourseProgress(courseId: string, videoKey: string): Promise<{
+  message: string;
+  data: { progress: number; completedVideos: Array<{ key: string }> };
+}> {
+  const response = await api.patch(`/user/me/courses/${courseId}/?videoKey=${videoKey}`);
+  return response.data;
+}
+
+export async function getSignedVideoUrl(courseId: string, key: string): Promise<{ signedUrl: string }> {
+  console.log(`Fetching signed URL for video key: ${key} in course: ${courseId}`);
+  
+  const response = await api.get<{ signedUrl: string }>(`/courses/${courseId}/videos/signed-url`, {
+    params: { key }
+  });
+  console.log(response.data);
+  
+  return response.data.url;
+}
+
