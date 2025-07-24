@@ -3,6 +3,7 @@ import {
   enrollInCourse,
   getAllCourses,
   getCourseById,
+  getCourseCertificate,
   getCourseProgress,
   getMyEnrolledCourses,
   getSignedVideoUrl,
@@ -27,7 +28,7 @@ export const fetchCoursesThunk = createAsyncThunk(
   'courses/fetchCourses',
   async (search: string = '', thunkAPI) => {
     try {
-      const response = await getAllCourses({ search, page: 1, limit: 10 });
+      const response = await getAllCourses({ search, page: 1, limit: 25 });
       return response.courses;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
@@ -54,8 +55,7 @@ export const fetchCourseProgress = createAsyncThunk(
   async (courseId: string, { rejectWithValue }) => {
     try {
       return await getCourseProgress(courseId);
-    } catch (error) {
-    }
+    } catch (error) {}
   },
 );
 
@@ -98,6 +98,19 @@ export const fetchSignedVideoUrl = createAsyncThunk(
       return await getSignedVideoUrl(courseId, videoKey);
     } catch (error) {
       console.error('Error fetching signed video URL:', error);
+    }
+  },
+);
+
+export const downloadCertificate = createAsyncThunk(
+  'course/downloadCertificate',
+  async (courseId: string, { rejectWithValue }) => {
+    try {
+      const response = await getCourseCertificate(courseId);
+      return response;
+    } catch (error) {
+      console.error('Error downloading certificate:', error);
+      return rejectWithValue('Failed to download certificate.');
     }
   },
 );

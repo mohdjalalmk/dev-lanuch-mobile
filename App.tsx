@@ -5,6 +5,7 @@ import AppNavigator from './src/navigation/RootNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { getToken } from './src/utils/auth';
 import { setBootstrapped, setToken } from './src/slices/authSlice';
+import Toast from 'react-native-toast-message';
 
 const Bootstrap = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const Bootstrap = () => {
     <>
       <NavigationContainer>
         <AppNavigator />
+        <Toast />
       </NavigationContainer>
     </>
   );

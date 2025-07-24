@@ -71,3 +71,8 @@ export async function getSignedVideoUrl(courseId: string, key: string): Promise<
   return response.data.url;
 }
 
+export const getCourseCertificate = async (courseId: string) => {
+  const res = await api.post(`/courses/${courseId}/generate-certificate`);
+  return res.data;
+}; 
+

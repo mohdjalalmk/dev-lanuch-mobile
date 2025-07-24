@@ -48,9 +48,9 @@ const ProfileScreen = () => {
 
   if (loading || !user) {
     return (
-      <View style={styles.loader}>
+      <ScreenWrapper style={styles.loader}>
         <ActivityIndicator size="large" color="#007aff" />
-      </View>
+      </ScreenWrapper>
     );
   }
 

@@ -55,9 +55,9 @@ const MyCoursesScreen = () => {
 
   if (!loading && enrolledCourses?.length === 0) {
     return (
-      <View style={styles.center}>
+      <ScreenWrapper style={styles.center}>
         <Text style={styles.emptyText}>You haven’t enrolled in any courses yet.</Text>
-      </View>
+      </ScreenWrapper>
     );
   }
 

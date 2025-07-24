@@ -9,6 +9,8 @@ import {
   selectVideo,
   fetchEnrolledCourses,
   resetCourseState,
+  fetchCoursesThunk,
+  downloadCertificate,
 } from '../slices/courseSlice';
 import { RootState } from '../store';
 import { Video } from '../utils/types';
@@ -21,9 +23,11 @@ import {
   FlatList,
   StyleSheet,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { VideoPlayer } from '../components/VideoPlayer';
 import ScreenWrapper from '../components/ScreenWrapper';
+import { saveCertificate } from '../utils/downloadCertificate';
 
 export const CourseDetailScreen = ({ route }) => {
   const courseId = route.params.id;
@@ -67,6 +71,20 @@ export const CourseDetailScreen = ({ route }) => {
     dispatch(enrollCourse(courseId) as any);
     setShowEnrollModal(false);
   };
+
+ const handleDownloadCertificate = async () => {
+  const result = await dispatch(downloadCertificate(course._id) as any);
+  const certUrl = result?.payload?.certificateUrl;
+console.log('Certificate URL:', certUrl);
+
+  if (!certUrl) {
+    Alert.alert('Error', 'Certificate not available.');
+    return;
+  }
+
+  await saveCertificate(certUrl);
+};
+
 
   const renderVideoItem = ({ item }: { item: Video }) => (
     <TouchableOpacity style={styles.videoItem} onPress={() => handlePlay(item)}>
@@ -120,6 +138,7 @@ export const CourseDetailScreen = ({ route }) => {
             {enrolled && (
               <View style={styles.certificateSection}>
                 <TouchableOpacity
+                onPress={handleDownloadCertificate}
                   style={[
                     styles.certificateBtn,
                     progress < 100 && { backgroundColor: '#555' },
