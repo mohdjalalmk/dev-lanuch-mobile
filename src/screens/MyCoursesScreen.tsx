@@ -47,9 +47,9 @@ const MyCoursesScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <ScreenWrapper style={styles.center}>
         <ActivityIndicator size="large" color="#3fc488" />
-      </View>
+      </ScreenWrapper>
     );
   }
 

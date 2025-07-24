@@ -8,6 +8,7 @@ import {
   Platform,
   ActivityIndicator,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import {
   TextInput,
@@ -22,6 +23,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch } from '../store';
 import { signupUser, verifyUserOtp } from '../slices/authSlice';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SignupScreen = () => {
   const [email, setEmail] = useState('');
@@ -172,8 +174,6 @@ const SignupScreen = () => {
         </Card.Content>
       </Card>
 
-      {/* OTP Modal */}
-      {/* OTP Modal */}
       <Modal
         visible={otpVisible}
         transparent
@@ -189,11 +189,10 @@ const SignupScreen = () => {
               title="Verify OTP"
               titleStyle={styles.title}
               right={props => (
-                <IconButton
-                  {...props}
-                  icon="close"
-                  onPress={() => setOtpVisible(false)}
-                />
+                <Pressable onPress={() => setOtpVisible(false)}>
+                <Icon name="close" size={30} color="#900" />
+
+                </Pressable>
               )}
             />
             <Card.Content>
