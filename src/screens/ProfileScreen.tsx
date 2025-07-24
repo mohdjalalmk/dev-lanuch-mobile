@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { RootState } from '../store';
 import { getUserProfile } from '../slices/userSlice';
 import { deleteUser, logoutUser } from '../slices/authSlice';
 import ScreenWrapper from '../components/ScreenWrapper';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -21,41 +22,72 @@ const ProfileScreen = () => {
     course => course.progress === 100,
   ).length;
 
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<() => void>(() => {});
+  const [confirmProps, setConfirmProps] = useState({
+    title: '',
+    message: '',
+    iconName: 'warning-outline',
+    iconColor: '#f44336',
+    confirmText: 'Confirm',
+  });
+
   useEffect(() => {
     dispatch(getUserProfile() as any);
   }, []);
 
-  const handleLogout = async () => {
-    dispatch(logoutUser() as any);
+  const handleLogout = () => {
+    setConfirmProps({
+      title: 'Logout',
+      message: 'Are you sure you want to log out?',
+      iconName: 'log-out-outline',
+      iconColor: '#3fc488',
+      confirmText: 'Logout',
+    });
+    setConfirmAction(() => () => dispatch(logoutUser() as any));
+    setConfirmVisible(true);
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      'Confirm Delete',
-      'Are you sure you want to delete your account? This action is irreversible.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            await dispatch(deleteUser() as any);
-          },
-        },
-      ],
-    );
+    setConfirmProps({
+      title: 'Delete Account',
+      message:
+        'This will permanently delete your account and cannot be undone.',
+      iconName: 'trash-outline',
+      iconColor: '#d11a2a',
+      confirmText: 'Delete',
+    });
+    setConfirmAction(() => () => dispatch(deleteUser() as any));
+    setConfirmVisible(true);
   };
 
   if (loading || !user) {
     return (
       <ScreenWrapper style={styles.loader}>
-        <ActivityIndicator size="large" color="#007aff" />
+        <ActivityIndicator size="large" color="#3fc488" />
       </ScreenWrapper>
     );
   }
 
+  const ConfiormPopUp = () => (
+    <ConfirmationModal
+      visible={confirmVisible}
+      title={confirmProps.title}
+      message={confirmProps.message}
+      iconName={confirmProps.iconName}
+      iconColor={confirmProps.iconColor}
+      confirmText={confirmProps.confirmText}
+      onConfirm={() => {
+        confirmAction();
+        setConfirmVisible(false);
+      }}
+      onDismiss={() => setConfirmVisible(false)}
+    />
+  );
+
   return (
     <ScreenWrapper style={styles.container}>
+      {ConfiormPopUp()}
       <View style={styles.card}>
         <Image
           source={{ uri: 'https://placehold.co/120x120?text=Avatar' }}

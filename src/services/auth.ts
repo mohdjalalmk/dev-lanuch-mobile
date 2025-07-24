@@ -13,8 +13,8 @@ export const logout = async () => {
   await removeToken();
 };
 
-export const deleteAccount = async (userId: string) => {
-  await api.delete(`/users/${userId}`);
+export const deleteAccount = async () => {
+  await api.delete(`/auth/delete`);
   await removeToken();
 };
 

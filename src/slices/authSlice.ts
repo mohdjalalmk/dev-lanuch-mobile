@@ -70,10 +70,12 @@ export const verifyUserOtp = createAsyncThunk('auth/verifyUserOtp', async (detai
 
 export const deleteUser = createAsyncThunk('auth/deleteUser', async (_, thunkAPI) => {
   try {
-    const state = thunkAPI.getState() as RootState;
-    const userId = state.auth.user?._id;
-    if (!userId) throw new Error('User not found');
-    await deleteAccount(userId);
+    await deleteAccount();
+    Toast.show({
+      type: 'success',
+      text1: 'Account Deleted',
+      text2: 'Your account has been successfully deleted.',
+    });
     return true;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || 'Delete failed');
