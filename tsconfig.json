@@ -3,6 +3,7 @@
   "include": [
     "src",
     "App.tsx",
-    "index.js"
+    "index.js",
+    "env.d.ts",
   ]
 }

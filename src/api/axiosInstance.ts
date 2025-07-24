@@ -1,17 +1,15 @@
 import axios from 'axios';
 import { getToken, removeToken } from '../utils/auth';
 import { logout } from '../slices/authSlice';
+import { API_BASE_URL, } from '@env';
 
-let storeRef: any = null; // Store reference placeholder
+let storeRef: any = null; 
 
 export const injectStore = (_store: any) => {
   storeRef = _store;
 };
-
 const api = axios.create({
-  //for local
-  baseURL: 'https://devlaunch-backend.onrender.com',
-  // baseURL: API_BASE_URL,
+  baseURL:API_BASE_URL,
   timeout: 10000,
 });
 
@@ -35,8 +33,6 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       await removeToken();
         storeRef.dispatch(logout());
-      // TODO: Dispatch logout action using Redux Toolkit (e.g., store.dispatch(logout()))
-      // This should be handled in a React context or middleware, not directly here.
     }
     return Promise.reject(error);
   },
