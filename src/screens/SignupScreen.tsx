@@ -1,46 +1,109 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { TextInput, Button, Text, Card, HelperText } from 'react-native-paper';
+import {
+  View,
+  StyleSheet,
+  Image,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  TextInput,
+  Button,
+  Text,
+  Card,
+  HelperText,
+  Portal,
+  IconButton,
+} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { useAppDispatch } from '../store';
+import { signupUser, verifyUserOtp } from '../slices/authSlice';
+import Toast from 'react-native-toast-message';
 
 const SignupScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [otp, setOtp] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [otpVisible, setOtpVisible] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpError, setOtpError] = useState('');
 
   const navigation = useNavigation<any>();
+  const dispatch = useAppDispatch();
 
   const handleSignup = async () => {
     setLoading(true);
     setError('');
-
     try {
       if (!email || !password || !confirmPassword || !name) {
-        throw new Error('All fields are required');
+        Toast.show({
+          type: 'error',
+          text1: 'Missing Fields',
+          text2: 'Please fill in all fields before signing up.',
+        });
+        return setLoading(false);
       }
 
       if (password !== confirmPassword) {
-        throw new Error('Passwords do not match');
+        Toast.show({
+          type: 'error',
+          text1: 'Password Mismatch',
+          text2: 'Please ensure both passwords match.',
+        });
+        setLoading(false);
+        return;
       }
 
-      // Simulate API
-      setTimeout(() => {
-        setLoading(false);
-        navigation.navigate('Home'); // or Login screen
-      }, 1000);
+      const resp = await dispatch(
+        signupUser({ name, email, password }),
+      ).unwrap();
+      if (resp) {
+        setOtpVisible(true);
+      }
     } catch (err: any) {
-      setError(err.message || 'Signup failed');
+      return Toast.show({
+        type: 'error',
+        text1: 'Signup Failed',
+        text2:
+          error.response?.data?.message || 'An error occurred during signup.',
+      });
+      setError(err.data.message || 'Signup failed');
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setOtpLoading(true);
+    setOtpError('');
+    try {
+      if (otp.length !== 6) {
+        throw new Error('OTP must be 6 digits');
+      }
+
+      await dispatch(verifyUserOtp({ email, otp })).unwrap();
+      setOtpVisible(false);
+    } catch (err: any) {
+      setOtpError(err.message || 'OTP verification failed');
+    } finally {
+      setOtpLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/devlaunch-2.png')} style={styles.logo} />
+      <Image
+        source={require('../../assets/devlaunch-2.png')}
+        style={styles.logo}
+      />
 
       <Card style={styles.card} elevation={12}>
         <Card.Title title="Create an Account" titleStyle={styles.title} />
@@ -87,16 +150,17 @@ const SignupScreen = () => {
             style={styles.input}
           />
 
-          <Button
-            mode="contained"
+          <TouchableOpacity
             onPress={handleSignup}
-            loading={loading}
             disabled={loading}
-            style={styles.signupButton}
-            contentStyle={{ height: 48 }}
+            style={[styles.signupButton, loading && { opacity: 0.7 }]}
           >
-            Sign Up
-          </Button>
+            {loading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.signupButtonText}>Sign Up</Text>
+            )}
+          </TouchableOpacity>
 
           <Button
             onPress={() => navigation.goBack()}
@@ -107,6 +171,63 @@ const SignupScreen = () => {
           </Button>
         </Card.Content>
       </Card>
+
+      {/* OTP Modal */}
+      {/* OTP Modal */}
+      <Modal
+        visible={otpVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setOtpVisible(false)}
+      >
+        <KeyboardAvoidingView
+          style={styles.modalOverlay}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <Card style={styles.modalCard}>
+            <Card.Title
+              title="Verify OTP"
+              titleStyle={styles.title}
+              right={props => (
+                <IconButton
+                  {...props}
+                  icon="close"
+                  onPress={() => setOtpVisible(false)}
+                />
+              )}
+            />
+            <Card.Content>
+              {otpError !== '' && (
+                <HelperText type="error" visible={true}>
+                  {otpError}
+                </HelperText>
+              )}
+
+              <TextInput
+                label="6-digit OTP"
+                value={otp}
+                onChangeText={setOtp}
+                mode="outlined"
+                keyboardType="numeric"
+                maxLength={6}
+                style={styles.input}
+              />
+
+              <TouchableOpacity
+                onPress={handleVerifyOtp}
+                disabled={otpLoading}
+                style={[styles.signupButton, otpLoading && { opacity: 0.7 }]}
+              >
+                {otpLoading ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={styles.signupButtonText}>Verify OTP</Text>
+                )}
+              </TouchableOpacity>
+            </Card.Content>
+          </Card>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 };
@@ -148,13 +269,37 @@ const styles = StyleSheet.create({
   },
   signupButton: {
     backgroundColor: brandColor,
-    marginTop: 8,
+    paddingVertical: 12,
     marginBottom: 12,
     borderRadius: 8,
+    color: 'white',
   },
   loginLabel: {
     color: brandColor,
     fontSize: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCard: {
+    width: '90%',
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: 'white',
+  },
+  buttonContent: {
+    height: 48,
+    justifyContent: 'center',
+    color: 'white',
+  },
+  signupButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 

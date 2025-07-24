@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import {
-  TextInput,
-  Button,
-  Card,
-  HelperText,
-} from 'react-native-paper';
+import { View, StyleSheet, Image, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
+import { TextInput, Button, Card, HelperText } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../slices/authSlice';
 import { useAppDispatch } from '../store';
-
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -19,26 +13,23 @@ const LoginScreen = () => {
   const [error, setError] = useState('');
 
   const navigation = useNavigation<any>();
-const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
+  const handleLogin = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      if (!email || !password) {
+        throw new Error('Email and Password are required');
+      }
 
-const handleLogin = async () => {
-  setLoading(true);
-  setError('');
-  try {
-    if (!email || !password) {
-      throw new Error('Email and Password are required');
+      await dispatch(loginUser({ email, password })).unwrap();
+
+      setLoading(false);
+    } catch (err: any) {
+      setLoading(false);
     }
-
-    await dispatch(loginUser({ email, password })).unwrap();
-
-    setLoading(false);
-  } catch (err: any) {
-    setError(err.message || 'Login failed');
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <View style={styles.container}>
@@ -75,16 +66,17 @@ const handleLogin = async () => {
             style={styles.input}
           />
 
-          <Button
-            mode="contained"
+          <TouchableOpacity
             onPress={handleLogin}
-            loading={loading}
             disabled={loading}
-            style={styles.loginButton}
-            contentStyle={{ height: 48 }}
+            style={[styles.signupButton, loading && { opacity: 0.7 }]}
           >
-            Login
-          </Button>
+            {loading ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={styles.signupButtonText}>Login</Text>
+            )}
+          </TouchableOpacity>
 
           <Button
             onPress={() => navigation.navigate('Signup')}
@@ -140,9 +132,23 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 12,
     borderRadius: 8,
+    color: 'white',
   },
   signupLabel: {
     color: brandColor,
     fontSize: 12,
+  },
+   signupButton: {
+    backgroundColor: brandColor,
+    paddingVertical: 12,
+    marginBottom: 12,
+    borderRadius: 8,
+    color: 'white',
+  },
+   signupButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

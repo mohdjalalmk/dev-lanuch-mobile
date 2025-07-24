@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { getToken } from './src/utils/auth';
 import { setBootstrapped, setToken } from './src/slices/authSlice';
 import Toast from 'react-native-toast-message';
+import { PaperProvider } from 'react-native-paper';
 
 const Bootstrap = () => {
   const dispatch = useDispatch();
@@ -23,12 +24,12 @@ const Bootstrap = () => {
   }, []);
 
   return (
-    <>
+    <PaperProvider>
       <NavigationContainer>
         <AppNavigator />
         <Toast />
       </NavigationContainer>
-    </>
+    </PaperProvider>
   );
 };
 
