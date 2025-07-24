@@ -75,7 +75,6 @@ export const CourseDetailScreen = ({ route }) => {
  const handleDownloadCertificate = async () => {
   const result = await dispatch(downloadCertificate(course._id) as any);
   const certUrl = result?.payload?.certificateUrl;
-console.log('Certificate URL:', certUrl);
 
   if (!certUrl) {
     Alert.alert('Error', 'Certificate not available.');

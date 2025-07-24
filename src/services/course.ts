@@ -60,14 +60,10 @@ export async function updateCourseProgress(courseId: string, videoKey: string): 
   return response.data;
 }
 
-export async function getSignedVideoUrl(courseId: string, key: string): Promise<{ signedUrl: string }> {
-  console.log(`Fetching signed URL for video key: ${key} in course: ${courseId}`);
-  
+export async function getSignedVideoUrl(courseId: string, key: string): Promise<{ signedUrl: string }> {  
   const response = await api.get<{ signedUrl: string }>(`/courses/${courseId}/videos/signed-url`, {
     params: { key }
-  });
-  console.log(response.data);
-  
+  });  
   return response.data.url;
 }
 

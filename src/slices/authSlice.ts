@@ -51,7 +51,6 @@ export const signupUser = createAsyncThunk('auth/signupUser', async (details: { 
     await sendOtp(details);
     return true; 
   } catch (error) {
-    console.log('Signup failed:', error.response);
     return Toast.show({
         type: 'error',
         text1: 'Signup Failed',
