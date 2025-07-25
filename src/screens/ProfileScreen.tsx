@@ -61,10 +61,26 @@ const ProfileScreen = () => {
     setConfirmVisible(true);
   };
 
-  if (loading || !user) {
+  if (loading) {
     return (
       <ScreenWrapper style={styles.loader}>
         <ActivityIndicator size="large" color="#3fc488" />
+      </ScreenWrapper>
+    );
+  }
+
+  if (!user) {
+    return (
+      <ScreenWrapper style={styles.loader}>
+        <Text style={{ fontSize: 16, marginBottom: 20,color: '#fff' }}>
+          Failed to load profile.
+        </Text>
+        <Button
+          mode="contained"
+          onPress={() => dispatch(getUserProfile() as any)}
+        >
+          Retry
+        </Button>
       </ScreenWrapper>
     );
   }

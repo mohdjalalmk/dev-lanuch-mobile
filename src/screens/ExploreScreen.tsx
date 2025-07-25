@@ -22,7 +22,7 @@ const ExploreScreen = () => {
 
   const { groupedCourses, enrolledCourseIds } = useSelector(
     (state: RootState) => state.courses
-  );
+  );  
 
   const debouncedFetch = useCallback(
     debounce((query: string) => {

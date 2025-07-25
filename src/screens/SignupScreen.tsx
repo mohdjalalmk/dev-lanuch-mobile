@@ -16,8 +16,6 @@ import {
   Text,
   Card,
   HelperText,
-  Portal,
-  IconButton,
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch } from '../store';
@@ -75,9 +73,8 @@ const SignupScreen = () => {
         type: 'error',
         text1: 'Signup Failed',
         text2:
-          error.response?.data?.message || 'An error occurred during signup.',
+          err.response?.data?.message || 'An error occurred during signup.',
       });
-      setError(err.data.message || 'Signup failed');
     } finally {
       setLoading(false);
     }

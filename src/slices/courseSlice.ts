@@ -216,6 +216,8 @@ const courseSlice = createSlice({
         state.error = '';
       })
       .addCase(fetchEnrolledCourses.fulfilled, (state, action) => {
+        state.enrolledCourseIds = action.payload
+          .enrolledCourses.map((item)=> item.courseId._id);
         state.enrolledCourses = action.payload
           .enrolledCourses as typeof state.enrolledCourses;
         state.loading = false;
