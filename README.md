@@ -1,6 +1,13 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 📱 DevLaunch Mobile
 
-# Getting Started
+DevLaunch is a mobile e-learning platform built with **React Native**, allowing users to purchase, enroll in, and watch video courses on the go.  
+
+## ✨ Features
+- 🛒 **Browse & purchase courses**
+- 📝 **Enroll and track progress**
+- 🎥 **Watch video lessons anytime, anywhere**
+
+# Setup instructions
 
 > **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
 
